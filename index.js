@@ -25,20 +25,30 @@ app.get('/health', (req, res) => {
 // Function to fetch the respective service details from Consul
 const fetchingService = async (requestedService) => {
     try {
-        const url = `https://${CONSUL_HOST}:${CONSUL_PORT}/v1/catalog/service/${requestedService}`;
-        const response = await axios.get(url);
+        console.log(`🔎 Fetching service details for ${requestedService} from Consul...`);
 
-        if (!response.data || response.data.length === 0) {
-            throw new Error(`Service '${requestedService}' not registered in Consul`);
+        // Make request to Consul to get service details
+        const response = await axios.get(`https://${CONSUL_HOST}:${CONSUL_PORT}/v1/catalog/service/${requestedService}`);
+
+        if (response.data.length === 0) {
+            throw new Error(`❌ Service '${requestedService}' not registered in Consul`);
         }
 
-        const foundService = response.data[0]; // Pick the first instance
-        const serviceUrl = `http://${foundService.ServiceAddress || foundService.Address}:${foundService.ServicePort}`;
+        // Find a publicly accessible service (NOT localhost)
+        const publicService = response.data.find(service => service.Address !== "127.0.0.1");
 
-        console.log(`✅ Fetched service URL for ${requestedService}: ${serviceUrl}`);
+        if (!publicService) {
+            throw new Error(`❌ No public instance found for service '${requestedService}'`);
+        }
+
+        // Construct the correct service URL
+        const serviceUrl = `http://${publicService.Address}:${publicService.ServicePort}`;
+
+        console.log(`✅ Fetched public service URL for ${requestedService}: ${serviceUrl}`);
         return serviceUrl;
     } catch (error) {
-        throw new Error(`❌ Error fetching service details for ${requestedService}: ${error.message}`);
+        console.error(`❌ Error fetching service details for ${requestedService}: ${error.message}`);
+        throw new Error(error.message);
     }
 };
 
