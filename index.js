@@ -4,7 +4,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const consul = require('./middleware/consul'); // Import the Consul registration file
 
 const app = express();
-const PORT = 443;
+const PORT = 4000;
 
 // Health Check Route for Consul
 app.get('/health', (req, res) => {
