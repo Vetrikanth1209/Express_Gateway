@@ -1,6 +1,5 @@
 const express = require('express');
 require('dotenv').config();
-const { createProxyMiddleware } = require('http-proxy-middleware');
 const consul = require('./middleware/consul'); // Import the Consul registration file
 
 const app = express();
@@ -25,40 +24,24 @@ const fetchingService = async (requestedService) => {
     }
 };
 
-// Middleware to forward requests to the respective microservices
-const forwardRequest = (serviceName) => {
-    return async (req, res, next) => {
-        try {
-            const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
-            if (!serviceNameEnv) {
-                throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
-            }
-            const serviceUrl = await fetchingService(serviceNameEnv);
-            createProxyMiddleware({
-                target: serviceUrl,
-                changeOrigin: true,
-            })(req, res, next);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
+// Directly contact Consul for the service URL
+app.get('/:serviceName/*', async (req, res) => {
+    const { serviceName } = req.params;
+    const servicePath = req.params[0];
+    try {
+        const serviceNameEnv = process.env[`${serviceName.toUpperCase()}_SERVICE_NAME`];
+        if (!serviceNameEnv) {
+            throw new Error(`Environment variable for ${serviceName.toUpperCase()}_SERVICE_NAME is not defined`);
         }
-    };
-};
-
-// Define API gateways for each service
-app.use('/poc_gateway', forwardRequest('POC'));
-app.use('/expert_gateway', forwardRequest('EXPERT'));
-app.use('/mcq_gateway', forwardRequest('MCQ'));
-app.use('/test_gateway', forwardRequest('TEST'));
-app.use('/testcase_gateway', forwardRequest('TESTCASE'));
-app.use('/coding_gateway', forwardRequest('CODING'));
-app.use('/attendance_gateway', forwardRequest('ATTENDANCE'));
-app.use('/certificates_gateway', forwardRequest('CERTIFICATES'));
-app.use('/overall_gateway', forwardRequest('OVERALL'));
-app.use('/individual_gateway', forwardRequest('INDIVIDUAL'));
-app.use('/results_gateway', forwardRequest('RESULTS'));
-app.use('/user_gateway', forwardRequest('USER'));
-app.use('/modules_gateway', forwardRequest('MODULES'));
-app.use('/organization_gateway', forwardRequest('ORGANIZATION'));
+        const serviceUrl = await fetchingService(serviceNameEnv);
+        const targetUrl = `${serviceUrl}/${servicePath}`;
+        const response = await fetch(targetUrl); // Use fetch or any HTTP library to forward the request
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // Start the API Gateway
 app.listen(PORT, () => {
