@@ -58,11 +58,11 @@ const forwardRequest = (serviceName) => {
         try {
             console.log(`🔄 Forwarding request to ${serviceName} service...`);
 
-            // Get service name from environment variables (fallback to default serviceName)
-            const serviceNameEnv = process.env.serviceName;
+            // Fetch service name from environment variables
+            const serviceNameEnv = process.env[serviceName];
 
             if (!serviceNameEnv) {
-                throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
+                throw new Error(`Environment variable for ${serviceName} is not defined`);
             }
 
             // Fetch the actual service URL from Consul
@@ -84,6 +84,7 @@ const forwardRequest = (serviceName) => {
         }
     };
 };
+
 
 
 // Define API gateways for each service
