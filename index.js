@@ -1,14 +1,13 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-const axios = require('axios'); // For making direct HTTP requests to the service
-const { createProxyMiddleware } = require('http-proxy-middleware');  // Import proxy middleware
+const axios = require('axios'); // For making direct HTTP requests to services
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Set IS_PUBLIC directly in the code for public environment
-const isPublic = true;  // This is now hardcoded for public use
+const isPublic = true; // Hardcoded for public use
 
 // Consul server settings
 const CONSUL_HOST = process.env.CONSUL_HOST || 'consul-jz12.onrender.com';
@@ -16,6 +15,7 @@ const CONSUL_PORT = process.env.CONSUL_PORT || 443;
 
 // Setup CORS
 app.use(cors());
+app.use(express.json()); // To handle JSON request bodies
 
 // Health Check Route for Consul
 app.get('/health', (req, res) => {
@@ -44,35 +44,36 @@ const fetchingService = async (requestedService) => {
     }
 };
 
-// Middleware to forward requests to the respective microservices (only if public)
+// Middleware to forward requests to the respective microservices
 const forwardRequest = (serviceName) => {
-    return async (req, res, next) => {
+    return async (req, res) => {
         try {
-            if (isPublic) {
-                // Fetch the correct service name from the environment variable
-                const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
-                
-                if (!serviceNameEnv) {
-                    throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
-                }
-                
-                // Fetch the service URL from Consul
-                const serviceUrl = await fetchingService(serviceNameEnv);
-                
-                // Use proxy middleware to forward the request to the target service
-                createProxyMiddleware({
-                    target: serviceUrl,
-                    changeOrigin: true,
-                    pathRewrite: {
-                        [`^/${serviceName.toLowerCase()}_gateway`]: '', // Strip gateway prefix
-                    },
-                })(req, res, next);
-            } else {
-                // For internal use, handle the request directly
-                console.log(`Direct request to ${serviceName} service`);
-                res.status(200).json({ message: `Direct access to ${serviceName} service` });
+            if (!isPublic) {
+                return res.status(403).json({ error: "Service is not publicly accessible." });
             }
+
+            // Fetch the correct service name from the environment variable
+            const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
+
+            if (!serviceNameEnv) {
+                throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
+            }
+
+            // Fetch the service URL from Consul
+            const serviceUrl = await fetchingService(serviceNameEnv);
+
+            // Forward request to the actual microservice
+            const response = await axios({
+                method: req.method,
+                url: `${serviceUrl}${req.url}`,
+                headers: req.headers,
+                data: req.body,
+            });
+
+            // Send response back to client
+            res.status(response.status).json(response.data);
         } catch (error) {
+            console.error(`Error forwarding request to ${serviceName}: ${error.message}`);
             res.status(500).json({ error: error.message });
         }
     };
