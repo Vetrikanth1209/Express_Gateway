@@ -59,7 +59,7 @@ const forwardRequest = (serviceName) => {
             console.log(`🔄 Forwarding request to ${serviceName} service...`);
 
             // Get service name from environment variables (fallback to default serviceName)
-            const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`] || serviceName;
+            const serviceNameEnv = process.env[`${serviceName}`] || serviceName;
 
             if (!serviceNameEnv) {
                 throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
@@ -87,20 +87,20 @@ const forwardRequest = (serviceName) => {
 
 
 // Define API gateways for each service
-app.use('/poc_gateway', forwardRequest('POC'));
-app.use('/expert_gateway', forwardRequest('EXPERT'));
-app.use('/mcq_gateway', forwardRequest('MCQ'));
-app.use('/test_gateway', forwardRequest('TEST'));
-app.use('/testcase_gateway', forwardRequest('TESTCASE'));
-app.use('/coding_gateway', forwardRequest('CODING'));
-app.use('/attendance_gateway', forwardRequest('ATTENDANCE'));
-app.use('/certificates_gateway', forwardRequest('CERTIFICATES'));
-app.use('/overall_gateway', forwardRequest('OVERALL'));
-app.use('/individual_gateway', forwardRequest('INDIVIDUAL'));
-app.use('/results_gateway', forwardRequest('RESULTS'));
-app.use('/user_gateway', forwardRequest('USER'));
-app.use('/modules_gateway', forwardRequest('MODULES'));
-app.use('/organization_gateway', forwardRequest('ORGANIZATION'));
+app.use('/poc_gateway', forwardRequest('POC_SERVICE_NAME'));
+app.use('/expert_gateway', forwardRequest('EXPERT_SERVICE_NAME'));
+app.use('/mcq_gateway', forwardRequest('MCQ_SERVICE_NAME'));
+app.use('/test_gateway', forwardRequest('TEST_SERVICE_NAME'));
+app.use('/testcase_gateway', forwardRequest('TESTCASE_SERVICE_NAME'));
+app.use('/coding_gateway', forwardRequest('CODING_SERVICE_NAME'));
+app.use('/attendance_gateway', forwardRequest('ATTENDANCE_SERVICE_NAME'));
+app.use('/certificates_gateway', forwardRequest('CERTIFICATES_SERVICE_NAME'));
+app.use('/overall_gateway', forwardRequest('INDIVIDUAL_SERVICE_NAME'));
+app.use('/individual_gateway', forwardRequest('OVERALL_SERVICE_NAME'));
+app.use('/results_gateway', forwardRequest('RESULTS_SERVICE_NAME'));
+app.use('/user_gateway', forwardRequest('USER_SERVICE_NAME'));
+app.use('/modules_gateway', forwardRequest('MODULES_SERVICE_NAME'));
+app.use('/organization_gateway', forwardRequest('ORGANIZATION_SERVICE_NAME'));
 
 // Start the API Gateway
 app.listen(PORT, () => {
