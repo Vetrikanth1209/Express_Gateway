@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const axios = require('axios'); // Import axios for HTTP requests
 const consul = require('./middleware/consul'); // Import the Consul registration file
 
 const app = express();
@@ -20,11 +20,11 @@ app.get('/health', (req, res) => {
 // Function to fetch the respective service details from Consul
 const fetchingService = async (requestedService) => {
     try {
-        const services = await consul.catalog.service.nodes(requestedService);
-        if (services.length === 0) {
+        const response = await axios.get(`https://${process.env.CONSUL_HOST}:${process.env.CONSUL_PORT}/v1/catalog/service/${requestedService}`);
+        if (response.data.length === 0) {
             throw new Error(`Requested service '${requestedService}' not registered in Consul`);
         }
-        const foundService = services[0];
+        const foundService = response.data[0];
         return `http://${foundService.Address}:${foundService.ServicePort}`;
     } catch (error) {
         throw new Error(`Error fetching service details for ${requestedService}: ${error.message}`);
@@ -36,16 +36,23 @@ const forwardRequest = (serviceName) => {
     return async (req, res, next) => {
         try {
             if (isPublic) {
-                // Only proxy if in public environment
+                // Only forward request if in public environment
                 const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
                 if (!serviceNameEnv) {
                     throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
                 }
                 const serviceUrl = await fetchingService(serviceNameEnv);
-                createProxyMiddleware({
-                    target: serviceUrl,
-                    changeOrigin: true,
-                })(req, res, next);
+                
+                // Make a direct HTTP request to the service
+                const serviceResponse = await axios({
+                    method: req.method,
+                    url: serviceUrl + req.url,
+                    headers: req.headers,
+                    data: req.body,
+                });
+
+                // Send the response from the service to the client
+                res.status(serviceResponse.status).json(serviceResponse.data);
             } else {
                 // For internal use, handle the request directly
                 console.log(`Direct request to ${serviceName} service`);
