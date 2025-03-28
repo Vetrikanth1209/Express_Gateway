@@ -59,7 +59,7 @@ const forwardRequest = (serviceName) => {
             console.log(`🔄 Forwarding request to ${serviceName} service...`);
 
             // Get service name from environment variables (fallback to default serviceName)
-            const serviceNameEnv = process.env[`${serviceName}`] || serviceName;
+            const serviceNameEnv = process.env.serviceName;
 
             if (!serviceNameEnv) {
                 throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
