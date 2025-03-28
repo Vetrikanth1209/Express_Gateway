@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const axios = require('axios'); // For making direct HTTP requests to the service
+const { createProxyMiddleware } = require('http-proxy-middleware');  // Import proxy middleware
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -48,19 +49,24 @@ const forwardRequest = (serviceName) => {
     return async (req, res, next) => {
         try {
             if (isPublic) {
-                console.log(`Forwarding request to ${serviceName} service...`); // Debugging log
-                const serviceUrl = await fetchingService(serviceName);
+                // Fetch the correct service name from the environment variable
+                const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
                 
-                // Make a direct HTTP request to the service
-                const serviceResponse = await axios({
-                    method: req.method,
-                    url: serviceUrl + req.url,
-                    headers: req.headers,
-                    data: req.body,
-                });
-
-                // Send the response from the service to the client
-                res.status(serviceResponse.status).json(serviceResponse.data);
+                if (!serviceNameEnv) {
+                    throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
+                }
+                
+                // Fetch the service URL from Consul
+                const serviceUrl = await fetchingService(serviceNameEnv);
+                
+                // Use proxy middleware to forward the request to the target service
+                createProxyMiddleware({
+                    target: serviceUrl,
+                    changeOrigin: true,
+                    pathRewrite: {
+                        [`^/${serviceName.toLowerCase()}_gateway`]: '', // Strip gateway prefix
+                    },
+                })(req, res, next);
             } else {
                 // For internal use, handle the request directly
                 console.log(`Direct request to ${serviceName} service`);
