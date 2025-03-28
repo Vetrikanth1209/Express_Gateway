@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### Get All Modules
-GET http://localhost:4000/modules_gateway/modules/get_all_module
+GET https://express-gateway-wxid.onrender.com/modules_gateway/modules/get_all_module
 
 ### Get Module by ID
 GET http://localhost:4000/modules_gateway/modules/get_module_by_id/6503caf1-fb75-4640-99f2-d6a529b71205

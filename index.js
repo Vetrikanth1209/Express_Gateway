@@ -4,11 +4,11 @@ const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const consul = require('./middleware/consul'); // Import the Consul registration file
 
-
-
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Check if we are in a public environment (e.g., Render or similar)
+const isPublic = process.env.IS_PUBLIC === 'true';  // Set this to 'true' in your production environment
 
 app.use(cors());
 
@@ -31,19 +31,26 @@ const fetchingService = async (requestedService) => {
     }
 };
 
-// Middleware to forward requests to the respective microservices
+// Middleware to forward requests to the respective microservices (only if public)
 const forwardRequest = (serviceName) => {
     return async (req, res, next) => {
         try {
-            const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
-            if (!serviceNameEnv) {
-                throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
+            if (isPublic) {
+                // Only proxy if in public environment
+                const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
+                if (!serviceNameEnv) {
+                    throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
+                }
+                const serviceUrl = await fetchingService(serviceNameEnv);
+                createProxyMiddleware({
+                    target: serviceUrl,
+                    changeOrigin: true,
+                })(req, res, next);
+            } else {
+                // For internal use, handle the request directly
+                console.log(`Direct request to ${serviceName} service`);
+                res.status(200).json({ message: `Direct access to ${serviceName} service` });
             }
-            const serviceUrl = await fetchingService(serviceNameEnv);
-            createProxyMiddleware({
-                target: serviceUrl,
-                changeOrigin: true,
-            })(req, res, next);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
