@@ -28,7 +28,7 @@ const fetchingService = async (requestedService) => {
         console.log(`🔎 Fetching service details for ${requestedService} from Consul...`);
 
         // Make request to Consul to get service details
-        const response = await axios.get(`https://${CONSUL_HOST}:${CONSUL_PORT}/v1/catalog/service/${requestedService}`);
+        const response = await axios.get(`https://consul-jz12.onrender.com:443/v1/catalog/service/${requestedService}`);
 
         if (response.data.length === 0) {
             throw new Error(`❌ Service '${requestedService}' not registered in Consul`);
