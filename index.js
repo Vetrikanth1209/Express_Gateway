@@ -46,31 +46,35 @@ const fetchingService = async (requestedService) => {
 const forwardRequest = (serviceName) => {
     return async (req, res) => {
         try {
-            if (isPublic) {
-                console.log(`🔄 Forwarding request to ${serviceName} service...`);
+            console.log(`🔄 Forwarding request to ${serviceName} service...`);
 
-                // Fetch service URL from Consul
-                const serviceUrl = await fetchingService(serviceName);
+            // Get service name from environment variables (fallback to default serviceName)
+            const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`] || serviceName;
 
-                // Forward the request to the actual service
-                const serviceResponse = await axios({
-                    method: req.method,
-                    url: serviceUrl + req.url, // Append the original path
-                    headers: req.headers,
-                    data: req.body,
-                });
-
-                // Send the service's response back to the client
-                res.status(serviceResponse.status).json(serviceResponse.data);
-            } else {
-                res.status(403).json({ error: 'Service access is restricted' });
+            if (!serviceNameEnv) {
+                throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
             }
+
+            // Fetch the actual service URL from Consul
+            const serviceUrl = await fetchingService(serviceNameEnv);
+
+            // Forward the request to the actual service
+            const serviceResponse = await axios({
+                method: req.method,
+                url: `${serviceUrl}${req.url}`, // Append original path
+                headers: { ...req.headers, host: undefined }, // Remove host header to avoid conflicts
+                data: req.body,
+            });
+
+            // Send back the service's response
+            res.status(serviceResponse.status).json(serviceResponse.data);
         } catch (error) {
             console.error(`❌ Error forwarding request to ${serviceName}:`, error.message);
             res.status(500).json({ error: error.message });
         }
     };
 };
+
 
 // Define API gateways for each service
 app.use('/poc_gateway', forwardRequest('POC'));
