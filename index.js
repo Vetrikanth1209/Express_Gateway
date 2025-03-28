@@ -55,7 +55,7 @@ app.get('/:serviceName/*', async (req, res) => {
 
     try {
         // Constructing key dynamically as SERVICE_NAME mapping
-        const serviceNameKey = `${serviceName.toUpperCase()}`;
+        const serviceNameKey = `${serviceName.toUpperCase()}_SERVICE_NAME`;
         const serviceNameEnv = SERVICE_NAMES[serviceNameKey];
 
         if (!serviceNameEnv) {
