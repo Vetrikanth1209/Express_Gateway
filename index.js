@@ -52,6 +52,7 @@ const fetchingService = async (requestedService) => {
 app.get('/:serviceName/*', async (req, res) => {
     const { serviceName } = req.params;
     const servicePath = req.params[0];
+    console.log("At loging "+servicePath)
 
     try {
         // Constructing key dynamically as SERVICE_NAME mapping
