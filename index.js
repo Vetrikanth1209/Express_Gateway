@@ -100,7 +100,7 @@ app.use('/overall_gateway', forwardRequest('INDIVIDUAL_SERVICE_NAME'));
 app.use('/individual_gateway', forwardRequest('OVERALL_SERVICE_NAME'));
 app.use('/results_gateway', forwardRequest('RESULTS_SERVICE_NAME'));
 app.use('/user_gateway', forwardRequest('USER_SERVICE_NAME'));
-app.use('/modules_gateway', forwardRequest('MODULES_SERVICE_NAME'));
+app.use('/modules_gateway', forwardRequest('ORGANIZATION_SERVICE_NAME'));
 app.use('/organization_gateway', forwardRequest('ORGANIZATION_SERVICE_NAME'));
 
 // Start the API Gateway
