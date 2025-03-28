@@ -1,14 +1,14 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-const axios = require('axios'); // Import axios for HTTP requests
+const axios = require('axios'); // For making direct HTTP requests to the service
 const consul = require('./middleware/consul'); // Import the Consul registration file
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Check if we are in a public environment (e.g., Render or similar)
-const isPublic = process.env.IS_PUBLIC === 'true';  // Set this to 'true' in your production environment
+// Set IS_PUBLIC directly in the code for public environment
+const isPublic = true;  // This is now hardcoded for public use
 
 app.use(cors());
 
@@ -20,11 +20,11 @@ app.get('/health', (req, res) => {
 // Function to fetch the respective service details from Consul
 const fetchingService = async (requestedService) => {
     try {
-        const response = await axios.get(`https://${process.env.CONSUL_HOST}:${process.env.CONSUL_PORT}/v1/catalog/service/${requestedService}`);
-        if (response.data.length === 0) {
+        const services = await consul.catalog.service.nodes(requestedService);
+        if (services.length === 0) {
             throw new Error(`Requested service '${requestedService}' not registered in Consul`);
         }
-        const foundService = response.data[0];
+        const foundService = services[0];
         return `http://${foundService.Address}:${foundService.ServicePort}`;
     } catch (error) {
         throw new Error(`Error fetching service details for ${requestedService}: ${error.message}`);
@@ -36,7 +36,7 @@ const forwardRequest = (serviceName) => {
     return async (req, res, next) => {
         try {
             if (isPublic) {
-                // Only forward request if in public environment
+                console.log(`Forwarding request to ${serviceName} service...`); // Debugging log
                 const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
                 if (!serviceNameEnv) {
                     throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
