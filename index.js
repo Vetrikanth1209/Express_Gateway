@@ -2,7 +2,6 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const axios = require('axios'); // For making direct HTTP requests to the service
-const consul = require('./middleware/consul'); // Import the Consul registration file
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -10,6 +9,11 @@ const PORT = process.env.PORT || 4000;
 // Set IS_PUBLIC directly in the code for public environment
 const isPublic = true;  // This is now hardcoded for public use
 
+// Consul server settings
+const CONSUL_HOST = process.env.CONSUL_HOST || 'consul-jz12.onrender.com';
+const CONSUL_PORT = process.env.CONSUL_PORT || 443;
+
+// Setup CORS
 app.use(cors());
 
 // Health Check Route for Consul
@@ -20,12 +24,20 @@ app.get('/health', (req, res) => {
 // Function to fetch the respective service details from Consul
 const fetchingService = async (requestedService) => {
     try {
-        const services = await consul.catalog.service.nodes(requestedService);
-        if (services.length === 0) {
+        // Make a GET request to the Consul API to get service nodes
+        const response = await axios.get(`https://${CONSUL_HOST}:${CONSUL_PORT}/v1/catalog/service/${requestedService}`);
+        
+        // Check if services are available
+        if (response.data.length === 0) {
             throw new Error(`Requested service '${requestedService}' not registered in Consul`);
         }
-        const foundService = services[0];
-        return `http://${foundService.Address}:${foundService.ServicePort}`;
+        
+        const foundService = response.data[0]; // Take the first registered instance
+        const serviceUrl = `http://${foundService.Address}:${foundService.ServicePort}`;
+        
+        console.log(`Fetched service URL for ${requestedService}: ${serviceUrl}`);
+        
+        return serviceUrl;
     } catch (error) {
         throw new Error(`Error fetching service details for ${requestedService}: ${error.message}`);
     }
@@ -37,11 +49,7 @@ const forwardRequest = (serviceName) => {
         try {
             if (isPublic) {
                 console.log(`Forwarding request to ${serviceName} service...`); // Debugging log
-                const serviceNameEnv = process.env[`${serviceName}_SERVICE_NAME`];
-                if (!serviceNameEnv) {
-                    throw new Error(`Environment variable for ${serviceName}_SERVICE_NAME is not defined`);
-                }
-                const serviceUrl = await fetchingService(serviceNameEnv);
+                const serviceUrl = await fetchingService(serviceName);
                 
                 // Make a direct HTTP request to the service
                 const serviceResponse = await axios({
