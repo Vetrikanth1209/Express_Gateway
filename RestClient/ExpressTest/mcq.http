@@ -38,12 +38,12 @@ POST https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/submit_result
 Content-Type: application/json
 
 {
-  "result_user_id": "user_123123456787654",
+  "result_user_id": "user_123123.mvgkjhgfh456787654",
   "result_test_id": "test_456",
-  "result_score": 85,
+  "result_score": 55,
   "result_total_score":100,  
   "result_poc_id": "poc_789",
-  "result_id": "result_001"
+  "result_id": "result_1209"
 }
 
 #### GET MCQ ID ONLY
