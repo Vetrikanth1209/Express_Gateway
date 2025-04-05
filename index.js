@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
+const axios = require("axios");
 const consul = require('./middleware/consul'); 
 const { createProxyMiddleware } = require('http-proxy-middleware');// Import the Consul registration file
 
