@@ -1,64 +1,63 @@
 ### Create a new POC
-POST http://localhost:4000/poc_gateway/poc/add_poc
+POST https://express-gateway-iu1f.onrender.com/poc_gateway/poc/add_poc
 Content-Type: application/json
 
 {
-    "mod_poc_name": "dhacddcdcdvdvdruwwdn",
-    "mod_poc_role": "AP",
-    "mod_poc_email": "dharwdddvvdvdcddccwdun@gmail.com",
-    "mod_poc_mobile": "9871121121521143410"
+    "mod_poc_name": "vijay",
+    "mod_poc_role": "hod",
+    "mod_poc_email": "vijay@gmail.com",
+    "mod_poc_mobile": "7987654323456"
 }
 
 ### Get all POCs
-GET http://localhost:4000/poc_gateway/poc/read_all_poc
+GET https://express-gateway-iu1f.onrender.com/poc_gateway/poc/read_all_poc
 
 ### Get POC by mod_poc_id
-GET http://localhost:4000/poc_gateway/poc/get_poc_by_poc_id/d6e75618-09b7-40a6-a669-c5f3dfba4d05
+GET https://express-gateway-iu1f.onrender.com/poc_gateway/poc/get_poc_by_poc_id/13507cff-b220-496f-b656-a6970783953b
 
 ### Update POC details
-PUT http://localhost:4000/poc_gateway/poc/update_poc
+PUT https://express-gateway-iu1f.onrender.com/poc_gateway/poc/update_poc
 Content-Type: application/json
 
 {
-    "mod_poc_id": "f4e816ef-f669-405c-be8c-eb5338c6ef67",
-    "mod_poc_name": "Vetro",
-    "mod_poc_role": "T",
-    "mod_poc_email": "dharusdsdn@gmail.com",
+    "mod_poc_id": "13507cff-b220-496f-b656-a6970783953b",
+    "mod_poc_name": "vijay",
+    "mod_poc_role": "hod",
+    "mod_poc_email": "vijay123@gmail.com",
     "mod_poc_mobile": "99981241887776",
     "mod_users": ["717150b2-2a19-45e8-9c24-69d93b4751c2"]
 }
 
 ### Update only mod_tests and mod_users
-PUT http://localhost:4000/poc_gateway/poc/update_mod_field
+PUT https://express-gateway-iu1f.onrender.com/poc_gateway/poc/update_mod_field
 Content-Type: application/json
 
 {
-    "mod_poc_id": "8ddcfe54-c282-4ce1-80d2-21cab5ec7819",
+    "mod_poc_id": "13507cff-b220-496f-b656-a6970783953b",
     "mod_tests": [],
     "mod_users": ["717150b2-2a19-45e8-9c24-69d93b4751c2"]
 }
 
 ### Update Test ID for a POC
-PUT http://localhost:4000/poc_gateway/poc/update_test
+PUT https://express-gateway-iu1f.onrender.com/poc_gateway/poc/update_test
 Content-Type: application/json
 
 {
-    "mod_poc_id": "f4e816ef-f669-405c-be8c-eb5338c6ef67",
-    "test_id": "new_test_999821221"
+    "mod_poc_id": "13507cff-b220-496f-b656-a6970783953b",
+     "test_id": ["9eb93e29-0857-46e3-8ffd-7fe50249eab6"]
 }
 
 ### Delete Test by mod_poc_id
-DELETE http://localhost:4000/poc_gateway/poc/delete_test/f4e816ef-f669-405c-be8c-eb5338c6ef67
-
+DELETE https://express-gateway-iu1f.onrender.com/poc_gateway/poc/delete_test/13507cff-b220-496f-b656-a6970783953b
 ### Delete POC by mod_poc_id
-DELETE http://localhost:4000/poc_gateway/poc/delete_poc/f4e816ef-f669-405c-be8c-eb5338c6ef67
+DELETE https://express-gateway-iu1f.onrender.com/poc_gateway/poc/delete_poc/13507cff-b220-496f-b656-a6970783953b
 
 ###  GET POC BY USER
-GET http://localhost:4000/poc_gateway/poc/mod_by_user/1343fa0e-8b57-4b08-be4d-4ab750ec2806
+GET https://express-gateway-iu1f.onrender.com/poc_gateway/poc/mod_by_user/717150b2-2a19-45e8-9c24-69d93b4751c2
 
 ### GET MOD AND POC AND TEST ID BY USER ID 
-GET http://localhost:4000/poc_gateway/poc/mod_and_poc/
+GET https://express-gateway-iu1f.onrender.com/poc_gateway/poc/mod_and_poc/717150b2-2a19-45e8-9c24-69d93b4751c2
 
 
 ### GET MOD AND POC AND TEST ID BY USER ID 
-GET http://localhost:4000/poc_gateway/poc/get_poc_certificate_by_mod_id/6503caf1-fb75-4640-99f2-d6a529b71205
+GET https://express-gateway-iu1f.onrender.com/poc_gateway/poc/get_poc_certificate_by_mod_id/13507cff-b220-496f-b656-a6970783953b

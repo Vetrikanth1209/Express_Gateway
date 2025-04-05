@@ -1,20 +1,20 @@
 ### Create User
-POST http://localhost:4000/user_gateway/user/add_user
+POST https://express-gateway-iu1f.onrender.com/user_gateway/user/add_user
 Content-Type: application/json
 
 {
-  "full_name": "Dharun",
+  "full_name": "mouleesh",
   "department": "Computer Science",
   "college": "mec",
-  "rollno": "22ad063",
-  "email": "dharun@gmail.com",
+  "rollno": "22ad085",
+  "email": "moulee@gmail.com",
   "password": "0000",
   "status": "active",
   "user_last_login": "2025-03-16T10:00:00Z"
 }
 
 ### Login User
-POST http://localhost:4000/user_gateway/user/login
+POST https://express-gateway-iu1f.onrender.com/user_gateway/user/login
 Content-Type: application/json
 
 {
@@ -24,24 +24,24 @@ Content-Type: application/json
 
 
 ### Get All Users
-GET http://localhost:4000/user_gateway/user/read_all_users
+GET https://express-gateway-iu1f.onrender.com/user_gateway/user/read_all_users
 
 ### Get User by ID
-GET http://localhost:4000/user_gateway/user/get_user_by_id/717150b2-2a19-45e8-9c24-69d93b4751c2
+GET https://express-gateway-iu1f.onrender.com/user_gateway/user/get_user_by_id/771b2715-fad9-407c-ada3-6232c5c7976b
 
 
 ### Update User
-PUT http://localhost:4000/user_gateway/user/update_user/b7062a63-5ed2-4ae6-b499-0bdcdda0d7fa
+PUT https://express-gateway-iu1f.onrender.com/user_gateway/user/update_user/771b2715-fad9-407c-ada3-6232c5c7976b
 Content-Type: application/json
 
 {
-  "full_name": "Updated John Doe",
-  "email": "updated@example.com",
-  "password": "newpassword123"
+  "full_name": "mouli",
+  "email": "mouli@example.com",
+  "password": "1234"
 }
 
 ### Update User Last Login
-PUT http://localhost:4000/user_gateway/user/update_last_login/b7062a63-5ed2-4ae6-b499-0bdcdda0d7fa
+PUT https://express-gateway-iu1f.onrender.com/user_gateway/user/update_last_login/b7062a63-5ed2-4ae6-b499-0bdcdda0d7fa
 Content-Type: application/json
 
 {
@@ -49,9 +49,9 @@ Content-Type: application/json
 }
 
 ### Delete User
-DELETE http://localhost:4000/user_gateway/user/delete_user/b7062a63-5ed2-4ae6-b499-0bdcdda0d7fa
+DELETE https://express-gateway-iu1f.onrender.com/user_gateway/user/delete_user/771b2715-fad9-407c-ada3-6232c5c7976b
 
 
 ###############
-GET http://localhost:4000/health
+GET https://express-gateway-iu1f.onrender.com/health
 

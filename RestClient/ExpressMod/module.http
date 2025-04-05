@@ -1,32 +1,32 @@
 ### Create Module
-POST http://localhost:4000/modules_gateway/modules/add_module
+POST https://express-gateway-iu1f.onrender.com/modules_gateway/modules/add_module
 Content-Type: application/json
 
 {
   "mod_name": "Full Stack Devcscselopment",
-  "mod_tech": "MERcscN",
-  "mod_duration": "6 monsccths"
+  "mod_tech": "Python",
+  "mod_duration": "2 monsccths"
 }
 
 ### Get All Modules
-GET http://localhost:4000/modules_gateway/modules/get_all_module
+GET https://express-gateway-iu1f.onrender.com/modules_gateway/modules/get_all_module
 
 ### Get Module by ID
-GET http://localhost:4000/modules_gateway/modules/get_module_by_id/ca81469c-0763-48e0-bbdd-bfd919769454
-
+GET https://express-gateway-iu1f.onrender.com/modules_gateway/modules/get_module_by_id/c85d768d-5adf-414b-a6b8-29fa712c9100
 ### Update Module
-PUT http://localhost:4000/modules_gateway/modules/update_module
+PUT https://express-gateway-iu1f.onrender.com/modules_gateway/modules/update_module
 Content-Type: application/json
 
 {
-  "mod_id": "ca81469c-0763-48e0-bbdd-bfd919769454",
+  "mod_id": "c85d768d-5adf-414b-a6b8-29fa712c9100",
   "mod_name": "Advanced Full Stack",
-  "mod_tech": "MERN + React Native",
+  "mod_tech": "python",
   "mod_duration": "8 months"
 }
 
 ###  Delete Module
-DELETE http://localhost:4000/modules_gateway/modules/delete_module/ca81469c-0763-48e0-bbdd-bfd919769454
+DELETE https://express-gateway-iu1f.onrender.com/modules_gateway/modules/delete_module/c85d768d-5adf-414b-a6b8-29fa712c9100
+
 ### Get Module Name by ID
-GET http://localhost:4000/modules_gateway/modules/get_module_name_by_id/ca81469c-0763-48e0-bbdd-bfd919769454
+GET https://express-gateway-iu1f.onrender.com/modules_gateway/modules/get_module_name_by_id/c85d768d-5adf-414b-a6b8-29fa712c9100
 

@@ -1,5 +1,5 @@
 ### Create MCQ
-POST http://localhost:4000/mcq_gateway/mcq/add_mcq
+POST https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/add_mcq
 Content-Type: application/json
 
 [
@@ -8,27 +8,21 @@ Content-Type: application/json
         "mcq_options": ["Framework", "Library", "Runtime", "Database"],
         "mcq_answer": "Framework",
         "mcq_tag": ["Backend", "Node.js"]
-    },
-    {
-        "mcq_question": "What is React?",
-        "mcq_options": ["Framework", "Library", "Language", "Database"],
-        "mcq_answer": "Library",
-        "mcq_tag": ["Frontend", "JavaScript"]
     }
 ]
 
 ### Get All MCQs
-GET http://localhost:4000/mcq_gateway/mcq/get_all_mcqs
+GET https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/get_all_mcqs
 
 ### Get  MCQ  by id
-GET http://localhost:4000/mcq_gateway/mcq/get_mcq/0453498a-cae3-4646-984a-098a9a0746de
+GET https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/get_mcq/00b773d5-8b81-40e1-b232-76977d48f6f6
 
 ### Update MCQ  
-PUT http://localhost:4000/mcq_gateway/mcq/update_mcq
+PUT https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/update_mcq
 Content-Type: application/json
 
 {
-    "mcq_id": "dcedaa95-7985-476e-9252-8a043efc343a",
+    "mcq_id": "00b773d5-8b81-40e1-b232-76977d48f6f6",
     "mcq_question": "What is JavaScript?",
     "mcq_options": ["Runtime", "Library", "Framework", "Language"],
     "mcq_answer": "Language",
@@ -36,20 +30,21 @@ Content-Type: application/json
 }
 
 ### Delete MCQ
-DELETE http://localhost:4000/mcq_gateway/mcq/delete_mcq/dcedaa95-7985-476e-9252-8a043efc343a
+DELETE https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/delete_mcq/00b773d5-8b81-40e1-b232-76977d48f6f6
 
 
 ### Submit Result to External Service via Consul
-POST http://localhost:4000/mcq_gateway/mcq/submit_result
+POST https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/submit_result
 Content-Type: application/json
 
 {
-  "result_user_id": "user_123",
+  "result_user_id": "user_123123456787654",
   "result_test_id": "test_456",
   "result_score": 85,
+  "result_total_score":100,  
   "result_poc_id": "poc_789",
   "result_id": "result_001"
 }
 
 #### GET MCQ ID ONLY
-GET http://localhost:4000/mcq_gateway/mcq/mcq/ids
+GET https://express-gateway-iu1f.onrender.com/mcq_gateway/mcq/mcq/ids
